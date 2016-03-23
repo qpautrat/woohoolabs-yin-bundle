@@ -1,6 +1,6 @@
 {
     "name": "qpautrat/woohoolabs-yin-bundle",
-    "description": "Implements `woohoolabs/yin`_ framework into Symfony",
+    "description": "Implements woohoolabs/yin framework into Symfony",
     "keywords": ["json-api"],
     "type": "symfony-bundle",
     "license": "MIT",
