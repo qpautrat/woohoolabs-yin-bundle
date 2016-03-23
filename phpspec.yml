@@ -1,0 +1,4 @@
+suites:
+    default:
+        namespace: QPautrat\WoohoolabsYinBundle
+        psr4_prefix: QPautrat\WoohoolabsYinBundle
