@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\QPautrat\WoohoolabsYinBundle\Request\ParamConverter;
+namespace spec\QP\WoohoolabsYinBundle\Request\ParamConverter;
 
 use PhpSpec\ObjectBehavior;
-use QPautrat\WoohoolabsYinBundle\Factory\JsonApiFactory;
-use QPautrat\WoohoolabsYinBundle\Request\ParamConverter\JsonApiParamConverter;
+use QP\WoohoolabsYinBundle\Factory\JsonApiFactory;
+use QP\WoohoolabsYinBundle\Request\ParamConverter\JsonApiParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use WoohooLabs\Yin\JsonApi\JsonApi;
 

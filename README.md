@@ -1,4 +1,4 @@
-QPautratWoohoolabsYinBundle
+QPWoohoolabsYinBundle
 ==========================
 
 This bundle implements [woohoolabs/yin](https://github.com/woohoolabs/yin) framework.

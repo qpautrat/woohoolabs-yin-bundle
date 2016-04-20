@@ -1,4 +1,4 @@
-QPautratWoohoolabsYinBundle
+QPWoohoolabsYinBundle
 ==========================
 
 Implements `woohoolabs/yin`_ framework into Symfony.
@@ -19,16 +19,29 @@ Then, like for any other bundle, include it in your Kernel class:
         $bundles = array(
             // ...
 
-            new QPautrat\WoohoolabsYinBundle\QPautratWoohoolabsYinBundle(),
+            new QP\WoohoolabsYinBundle\QPWoohoolabsYinBundle(),
         );
 
         // ...
     }
 
+Configuration
+-------------
+
+By default ``jsonApi`` class is intialized with Yin's `ExceptionFactory`_.
+You can provide your own factory implementation.
+To do that you have to define which service to use in your global configuration like this:
+
+.. code-block:: yaml
+
+    qp_woohoolabs_yin:
+        exception_factory: yolo_service
+
+
 Usage
 -----
 
-Use ``qpautrat_woohoolabs_yin.json_api`` service:
+Use ``qp_woohoolabs_yin.json_api`` service:
 
 .. code-block:: php
 
@@ -40,7 +53,7 @@ Use ``qpautrat_woohoolabs_yin.json_api`` service:
     {
         public function helloAction()
         {
-            $jsonApi = $this->container->get('qpautrat_woohoolabs_yin.json_api');
+            $jsonApi = $this->container->get('qp_woohoolabs_yin.json_api');
 
             return $response = $jsonApi->respond()->ok(new HelloDocument(), 'hello');
         }
@@ -65,3 +78,4 @@ If you installed `sensio/framework-extra-bundle`_ you can use ``ParamConverter``
 
 .. _`woohoolabs/yin`: https://github.com/woohoolabs/yin
 .. _`sensio/framework-extra-bundle`: https://github.com/sensiolabs/SensioFrameworkExtraBundle
+.. _`ExceptionFactory`: https://github.com/woohoolabs/yin#exceptions

@@ -1,12 +1,12 @@
 <?php
 
-namespace QPautrat\WoohoolabsYinBundle;
+namespace QP\WoohoolabsYinBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * @author Quentin Pautrat <quentin.pautrat@gmail.com>
  */
-class QPautratWoohoolabsYinBundle extends Bundle
+class QPWoohoolabsYinBundle extends Bundle
 {
 }
