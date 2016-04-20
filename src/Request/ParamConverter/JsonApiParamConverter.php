@@ -1,8 +1,8 @@
 <?php
 
-namespace QPautrat\WoohoolabsYinBundle\Request\ParamConverter;
+namespace QP\WoohoolabsYinBundle\Request\ParamConverter;
 
-use QPautrat\WoohoolabsYinBundle\Factory\JsonApiFactory;
+use QP\WoohoolabsYinBundle\Factory\JsonApiFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;

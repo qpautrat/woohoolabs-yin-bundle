@@ -1,10 +1,10 @@
 <?php
 
-namespace QPautrat\WoohoolabsYinBundle\Factory;
+namespace QP\WoohoolabsYinBundle\Factory;
 
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Request;
-use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactory;
+use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\JsonApi;
 use WoohooLabs\Yin\JsonApi\Request\Request as JsonApiRequest;
 use Zend\Diactoros\Response;
@@ -17,13 +17,24 @@ use Zend\Diactoros\Response;
 class JsonApiFactory
 {
     /**
+     * @var DiactorosFactory
+     */
+    private $psrFactory;
+
+    /**
+     * @var ExceptionFactoryInterface
+     */
+    private $exceptionFactory;
+
+    /**
      * Constructor.
      *
-     * @param DiactorosFactory $factory
+     * @param DiactorosFactory $psrFactory
      */
-    public function __construct(DiactorosFactory $factory)
+    public function __construct(DiactorosFactory $psrFactory, ExceptionFactoryInterface $exceptionFactory)
     {
-        $this->factory = $factory;
+        $this->psrFactory       = $psrFactory;
+        $this->exceptionFactory = $exceptionFactory;
     }
 
     /**
@@ -35,8 +46,8 @@ class JsonApiFactory
      */
     public function create(Request $request)
     {
-        $request = $this->factory->createRequest($request);
+        $request = $this->psrFactory->createRequest($request);
 
-        return new JsonApi(new JsonApiRequest($request), new Response(), new ExceptionFactory());
+        return new JsonApi(new JsonApiRequest($request), new Response(), $this->exceptionFactory);
     }
 }

@@ -1,7 +1,7 @@
 {
     "name": "qpautrat/woohoolabs-yin-bundle",
     "description": "Implements woohoolabs/yin framework into Symfony",
-    "keywords": ["json-api"],
+    "keywords": ["json-api", "symfony"],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -26,12 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "QPautrat\\WoohoolabsYinBundle\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\QPautrat\\WoohoolabsYinBundle\\": "tests/app"
+            "QP\\WoohoolabsYinBundle\\": "src/"
         }
     }
 }
