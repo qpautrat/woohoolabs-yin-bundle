@@ -1,0 +1,24 @@
+parameters:
+    qp_woohoolabs_yin.exception_factory.default.class: 'WoohooLabs\Yin\JsonApi\Exception\ExceptionFactory'
+    qp_woohoolabs_yin.json_api.class: 'WoohooLabs\Yin\JsonApi\JsonApi'
+    qp_woohoolabs_yin.json_api.factory.class: 'QP\WoohoolabsYinBundle\Factory\JsonApiFactory'
+    qp_woohoolabs_yin.psr7_factory.class: 'Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
+
+services:
+    qp_woohoolabs_yin.exception_factory.default:
+        class: '%qp_woohoolabs_yin.exception_factory.default.class%'
+
+    qp_woohoolabs_yin.psr7_factory:
+        class: '%qp_woohoolabs_yin.psr7_factory.class%'
+        public: false
+
+    qp_woohoolabs_yin.json_api.factory:
+        arguments: ['@qp_woohoolabs_yin.psr7_factory', '@qp_woohoolabs_yin.exception_factory']
+        class: '%qp_woohoolabs_yin.json_api.factory.class%'
+        public: false
+    
+    qp_woohoolabs_yin.json_api:
+        arguments: ['@=service('request_stack').getCurrentRequest()']
+        class: '%qp_woohoolabs_yin.json_api.class%'
+        factory: 'qp_woohoolabs_yin.json_api.factory:create'
+   
