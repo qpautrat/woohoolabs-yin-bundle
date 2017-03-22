@@ -1,5 +1,5 @@
 parameters:
-    qp_woohoolabs_yin.exception_factory.default.class: WoohooLabs\Yin\JsonApi\Exception\ExceptionFactory
+    qp_woohoolabs_yin.exception_factory.default.class: WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory
     qp_woohoolabs_yin.json_api.class: WoohooLabs\Yin\JsonApi\JsonApi
     qp_woohoolabs_yin.json_api.factory.class: QP\WoohoolabsYinBundle\Factory\JsonApiFactory
     qp_woohoolabs_yin.psr7_factory.class: Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory
