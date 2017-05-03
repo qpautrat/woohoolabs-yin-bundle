@@ -48,6 +48,6 @@ class JsonApiFactory
     {
         $request = $this->psrFactory->createRequest($request);
 
-        return new JsonApi(new JsonApiRequest($request), new Response(), $this->exceptionFactory);
+        return new JsonApi(new JsonApiRequest($request, $this->exceptionFactory), new Response(), $this->exceptionFactory);
     }
 }
