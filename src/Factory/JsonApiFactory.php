@@ -6,7 +6,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Request;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\JsonApi;
-use WoohooLabs\Yin\JsonApi\Request\Request as JsonApiRequest;
+use QP\WoohoolabsYinBundle\Request\Request as JsonApiRequest;
 use Zend\Diactoros\Response;
 
 /**
