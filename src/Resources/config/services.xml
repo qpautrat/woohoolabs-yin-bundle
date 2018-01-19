@@ -8,7 +8,7 @@
         <parameter key="qp_woohoolabs_yin.psr7_factory.class">Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory</parameter>
         <parameter key="qp_woohoolabs_yin.json_api.class">WoohooLabs\Yin\JsonApi\JsonApi</parameter>
         <parameter key="qp_woohoolabs_yin.json_api.factory.class">QP\WoohoolabsYinBundle\Factory\JsonApiFactory</parameter>
-        <parameter key="qp_woohoolabs_yin.exception_factory.default.class">WoohooLabs\Yin\JsonApi\Exception\ExceptionFactory</parameter>
+        <parameter key="qp_woohoolabs_yin.exception_factory.default.class">WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory</parameter>
     </parameters>
     <services>
         <service id="qp_woohoolabs_yin.exception_factory.default" class="%qp_woohoolabs_yin.exception_factory.default.class%"/>

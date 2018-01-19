@@ -6,6 +6,8 @@ Implements `woohoolabs/yin`_ framework into Symfony.
 Installation
 ------------
 
+Note: `4.x` is for Yin `3.x` and `3.x` ks for Yin `0.11`
+
 .. code-block:: bash
 
     $ composer require qpautrat/woohoolabs-yin-bundle
@@ -35,7 +37,7 @@ To do that you have to define which service to use in your global configuration 
 .. code-block:: yaml
 
     qp_woohoolabs_yin:
-        exception_factory: yolo_service
+        exception_factory: my_exception_factory_service
 
 
 Usage
@@ -75,6 +77,15 @@ If you installed `sensio/framework-extra-bundle`_ you can use ``ParamConverter``
             return $response = $jsonApi->respond()->ok(new HelloDocument(), 'hello');
         }
     }
+
+You can also use symfony service binding instead of adding `sensio/framework-extra-bundle`_ dependency:
+
+.. code-block:: yaml
+    services:
+        _defaults:
+            ...
+            bind:
+                $jsonApi: '@qp_woohoolabs_yin.json_api'
 
 .. _`woohoolabs/yin`: https://github.com/woohoolabs/yin
 .. _`sensio/framework-extra-bundle`: https://github.com/sensiolabs/SensioFrameworkExtraBundle

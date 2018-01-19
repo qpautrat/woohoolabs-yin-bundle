@@ -17,6 +17,10 @@ use WoohooLabs\Yin\JsonApi\Request\Pagination\OffsetPagination;
 use WoohooLabs\Yin\JsonApi\Request\Pagination\PagePagination;
 use WoohooLabs\Yin\JsonApi\Schema\ResourceIdentifier;
 use WoohooLabs\Yin\JsonApi\Request\RequestInterface;
+use WoohooLabs\Yin\JsonApi\Request\Pagination\FixedPageBasedPagination;
+use WoohooLabs\Yin\JsonApi\Request\Pagination\PageBasedPagination;
+use WoohooLabs\Yin\JsonApi\Request\Pagination\OffsetBasedPagination;
+use WoohooLabs\Yin\JsonApi\Request\Pagination\CursorBasedPagination;
 
 class Request implements RequestInterface
 {
@@ -56,7 +60,9 @@ class Request implements RequestInterface
     protected $filtering;
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * Request constructor.
+     * @param ServerRequestInterface $request
+     * @param ExceptionFactoryInterface $exceptionFactory
      */
     public function __construct(ServerRequestInterface $request, ExceptionFactoryInterface $exceptionFactory)
     {
@@ -67,7 +73,7 @@ class Request implements RequestInterface
     /**
      * @throws \WoohooLabs\Yin\JsonApi\Exception\MediaTypeUnsupported
      */
-    public function validateContentTypeHeader()
+    public function validateContentTypeHeader(): void
     {
         if ($this->isValidMediaTypeHeader("Content-Type") === false) {
             throw new MediaTypeUnsupported($this->getHeaderLine("Content-Type"));
@@ -77,7 +83,7 @@ class Request implements RequestInterface
     /**
      * @throws \WoohooLabs\Yin\JsonApi\Exception\MediaTypeUnacceptable
      */
-    public function validateAcceptHeader()
+    public function validateAcceptHeader(): void
     {
         if ($this->isValidMediaTypeHeader("Accept") === false) {
             throw new MediaTypeUnacceptable($this->getHeaderLine("Accept"));
@@ -87,7 +93,7 @@ class Request implements RequestInterface
     /**
      * @throws \WoohooLabs\Yin\JsonApi\Exception\QueryParamUnrecognized
      */
-    public function validateQueryParams()
+    public function validateQueryParams(): void
     {
         foreach ($this->getQueryParams() as $queryParamName => $queryParamValue) {
             if (preg_match("/^([a-z]+)$/", $queryParamName) &&
@@ -104,13 +110,14 @@ class Request implements RequestInterface
      * @param string $headerName
      * @return bool
      */
-    protected function isValidMediaTypeHeader($headerName)
+    protected function isValidMediaTypeHeader(string $headerName): bool
     {
         $header = $this->getHeaderLine($headerName);
         return (strpos($header, "application/vnd.api+json") === false || $header === "application/vnd.api+json");
     }
 
-    protected function setIncludedFields()
+
+    protected function setIncludedFields(): void
     {
         $this->includedFields = [];
         $fields = $this->getQueryParam("fields", []);
@@ -129,7 +136,7 @@ class Request implements RequestInterface
      * @param string $resourceType
      * @return array
      */
-    public function getIncludedFields($resourceType)
+    public function getIncludedFields(string $resourceType): array
     {
         if ($this->includedFields === null) {
             $this->setIncludedFields();
@@ -143,7 +150,7 @@ class Request implements RequestInterface
      * @param string $field
      * @return bool
      */
-    public function isIncludedField($resourceType, $field)
+    public function isIncludedField(string $resourceType, string $field): bool
     {
         if ($this->includedFields === null) {
             $this->setIncludedFields();
@@ -160,7 +167,7 @@ class Request implements RequestInterface
         return isset($this->includedFields[$resourceType][$field]);
     }
 
-    protected function setIncludedRelationships()
+    protected function setIncludedRelationships(): void
     {
         $this->includedRelationships = [];
 
@@ -193,7 +200,7 @@ class Request implements RequestInterface
     /**
      * @return bool
      */
-    public function hasIncludedRelationships()
+    public function hasIncludedRelationships(): bool
     {
         if ($this->includedRelationships === null) {
             $this->setIncludedRelationships();
@@ -206,7 +213,7 @@ class Request implements RequestInterface
      * @param string $baseRelationshipPath
      * @return array
      */
-    public function getIncludedRelationships($baseRelationshipPath)
+    public function getIncludedRelationships(string $baseRelationshipPath): array
     {
         if ($this->includedRelationships === null) {
             $this->setIncludedRelationships();
@@ -225,7 +232,11 @@ class Request implements RequestInterface
      * @param array $defaultRelationships
      * @return bool
      */
-    public function isIncludedRelationship($baseRelationshipPath, $relationshipName, array $defaultRelationships)
+    public function isIncludedRelationship(
+        string $baseRelationshipPath,
+        string $relationshipName,
+        array $defaultRelationships
+    ): bool
     {
         if ($this->includedRelationships === null) {
             $this->setIncludedRelationships();
@@ -242,7 +253,7 @@ class Request implements RequestInterface
         return isset($this->includedRelationships[$baseRelationshipPath][$relationshipName]);
     }
 
-    protected function setSorting()
+    protected function setSorting(): void
     {
         $sortingQueryParam = $this->getQueryParam("sort", "");
         if ($sortingQueryParam === "") {
@@ -257,7 +268,7 @@ class Request implements RequestInterface
     /**
      * @return array
      */
-    public function getSorting()
+    public function getSorting(): array
     {
         if ($this->sorting === null) {
             $this->setSorting();
@@ -266,7 +277,7 @@ class Request implements RequestInterface
         return $this->sorting;
     }
 
-    protected function setPagination()
+    protected function setPagination(): void
     {
         $pagination =  $this->getQueryParam("page", null);
         $this->pagination = is_array($pagination) ? $pagination : [];
@@ -275,7 +286,7 @@ class Request implements RequestInterface
     /**
      * @return array
      */
-    public function getPagination()
+    public function getPagination(): array
     {
         if ($this->pagination === null) {
             $this->setPagination();
@@ -285,30 +296,33 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param mixed $defaultPage
-     * @return \WoohooLabs\Yin\JsonApi\Request\Pagination\FixedPagePagination
+     * @param int|null $defaultPage
+     * @return FixedPageBasedPagination
      */
-    public function getFixedPageBasedPagination($defaultPage = null)
+    public function getFixedPageBasedPagination(?int $defaultPage = null): FixedPageBasedPagination
     {
         return FixedPagePagination::fromPaginationQueryParams($this->getPagination(), $defaultPage);
     }
 
     /**
-     * @param mixed $defaultPage
-     * @param mixed $defaultSize
-     * @return \WoohooLabs\Yin\JsonApi\Request\Pagination\PagePagination
+     * @param int|null $defaultPage
+     * @param int|null $defaultSize
+     * @return PageBasedPagination
      */
-    public function getPageBasedPagination($defaultPage = null, $defaultSize = null)
+    public function getPageBasedPagination(?int $defaultPage = null, ?int $defaultSize = null): PageBasedPagination
     {
         return PagePagination::fromPaginationQueryParams($this->getPagination(), $defaultPage, $defaultSize);
     }
 
     /**
-     * @param mixed $defaultOffset
-     * @param mixed $defaultLimit
-     * @return \WoohooLabs\Yin\JsonApi\Request\Pagination\OffsetPagination
+     * @param int|null $defaultOffset
+     * @param int|null $defaultLimit
+     * @return OffsetBasedPagination
      */
-    public function getOffsetBasedPagination($defaultOffset = null, $defaultLimit = null)
+    public function getOffsetBasedPagination(
+        ?int $defaultOffset = null,
+        ?int $defaultLimit = null
+    ): OffsetBasedPagination
     {
         return OffsetPagination::fromPaginationQueryParams($this->getPagination(), $defaultOffset, $defaultLimit);
     }
@@ -317,21 +331,21 @@ class Request implements RequestInterface
      * @param mixed $defaultCursor
      * @return \WoohooLabs\Yin\JsonApi\Request\Pagination\CursorPagination
      */
-    public function getCursorBasedPagination($defaultCursor = null)
+    public function getCursorBasedPagination($defaultCursor = null): CursorBasedPagination
     {
         return CursorPagination::fromPaginationQueryParams($this->getPagination(), $defaultCursor);
     }
 
-    protected function setFiltering()
+    protected function setFiltering(): void
     {
         $filtering = $this->getQueryParam("filter", []);
         $this->filtering = is_array($filtering) ? $filtering : [];
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function getFiltering()
+    public function getFiltering(): array
     {
         if ($this->filtering === null) {
             $this->setFiltering();
@@ -341,11 +355,9 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param string $param
-     * @param mixed $default
-     * @return mixed
+     * @inheritdoc
      */
-    public function getFilteringParam($param, $default = null)
+    public function getFilteringParam(string $param, $default = null)
     {
         $filtering = $this->getFiltering();
 
@@ -357,7 +369,7 @@ class Request implements RequestInterface
      * @param mixed $default
      * @return array|string|mixed
      */
-    public function getQueryParam($name, $default = null)
+    public function getQueryParam(string $name, $default = null)
     {
         $queryParams = $this->serverRequest->getQueryParams();
 
@@ -369,9 +381,9 @@ class Request implements RequestInterface
      *
      * @param string $name
      * @param mixed $value
-     * @return $this
+     * @return $this|Request
      */
-    public function withQueryParam($name, $value)
+    public function withQueryParam(string $name, $value)
     {
         $self = clone $this;
         $queryParams = $this->serverRequest->getQueryParams();
@@ -381,7 +393,7 @@ class Request implements RequestInterface
         return $self;
     }
 
-    protected function initializeParsedQueryParams()
+    protected function initializeParsedQueryParams(): void
     {
         $this->includedFields = null;
         $this->includedRelationships = null;
@@ -391,8 +403,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param mixed $default
-     * @return array|mixed
+     * @inheritdoc
      */
     public function getResource($default = null)
     {
@@ -401,8 +412,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param mixed $default
-     * @return string|mixed
+     * @inheritdoc
      */
     public function getResourceType($default = null)
     {
@@ -412,8 +422,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param mixed $default
-     * @return string|mixed
+     * @inheritdoc
      */
     public function getResourceId($default = null)
     {
@@ -425,7 +434,7 @@ class Request implements RequestInterface
     /**
      * @return array
      */
-    public function getResourceAttributes()
+    public function getResourceAttributes(): array
     {
         $data = $this->getResource();
 
@@ -437,7 +446,7 @@ class Request implements RequestInterface
      * @param mixed $default
      * @return mixed
      */
-    public function getResourceAttribute($attribute, $default = null)
+    public function getResourceAttribute(string $attribute, $default = null)
     {
         $attributes = $this->getResourceAttributes();
 
@@ -448,7 +457,7 @@ class Request implements RequestInterface
      * @param string $relationship
      * @return \WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship|null
      */
-    public function getToOneRelationship($relationship)
+    public function getToOneRelationship(string $relationship): ?ToOneRelationship
     {
         $data = $this->getResource();
 
@@ -472,7 +481,7 @@ class Request implements RequestInterface
      * @param string $relationship
      * @return \WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship|null
      */
-    public function getToManyRelationship($relationship)
+    public function getToManyRelationship(string $relationship): ?ToManyRelationship
     {
         $data = $this->getResource();
 
