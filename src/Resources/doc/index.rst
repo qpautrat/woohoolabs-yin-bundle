@@ -81,11 +81,13 @@ If you installed `sensio/framework-extra-bundle`_ you can use ``ParamConverter``
 You can also use symfony service binding instead of adding `sensio/framework-extra-bundle`_ dependency:
 
 .. code-block:: yaml
+
     services:
         _defaults:
             ...
             bind:
                 $jsonApi: '@qp_woohoolabs_yin.json_api'
+                
 
 .. _`woohoolabs/yin`: https://github.com/woohoolabs/yin
 .. _`sensio/framework-extra-bundle`: https://github.com/sensiolabs/SensioFrameworkExtraBundle
