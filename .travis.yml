@@ -10,6 +10,6 @@ env:
         - PREFER_LOWEST=""
 
 install:
-    composer install $PREFER_LOWEST
+    composer update $PREFER_LOWEST
 
 script: composer test
