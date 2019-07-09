@@ -8,6 +8,10 @@ env:
         - PREFER_LOWEST="--prefer-lowest"
         - PREFER_LOWEST=""
 
+matrix:
+    allow_failures:
+        - env: PREFER_LOWEST="--prefer-lowest"
+
 install:
     composer update $PREFER_LOWEST
 
