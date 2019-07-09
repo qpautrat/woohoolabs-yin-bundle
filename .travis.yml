@@ -2,7 +2,14 @@ language: php
 php:
     - '7.1'
     - '7.2'
+    - '7.3'
 
-install: composer install
+env:
+    matrix:
+        - PREFER_LOWEST="--prefer-lowest"
+        - PREFER_LOWEST=""
+
+install:
+    composer install $PREFER_LOWEST
 
 script: composer test
