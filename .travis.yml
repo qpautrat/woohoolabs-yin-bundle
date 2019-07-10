@@ -3,6 +3,16 @@ php:
     - '7.1'
     - '7.2'
 
-install: composer install
+env:
+    matrix:
+        - PREFER_LOWEST="--prefer-lowest"
+        - PREFER_LOWEST=""
+
+matrix:
+    allow_failures:
+        - env: PREFER_LOWEST="--prefer-lowest"
+
+install:
+    composer update $PREFER_LOWEST
 
 script: composer test
