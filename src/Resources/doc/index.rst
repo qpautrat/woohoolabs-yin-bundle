@@ -43,42 +43,7 @@ To do that you have to define which service to use in your global configuration 
 Usage
 -----
 
-Use ``qp_woohoolabs_yin.json_api`` service:
-
-.. code-block:: php
-
-    namespace AppBundle\Controller;
-
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-    class DefaultController extends Controller
-    {
-        public function helloAction()
-        {
-            $jsonApi = $this->container->get('qp_woohoolabs_yin.json_api');
-
-            return $response = $jsonApi->respond()->ok(new HelloDocument(), 'hello');
-        }
-    }
-
-If you installed `sensio/framework-extra-bundle`_ you can use ``ParamConverter``:
-
-.. code-block:: php
-
-    namespace AppBundle\Controller;
-
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-    use WoohooLabs\Yin\JsonApi\JsonApi;
-
-    class DefaultController extends Controller
-    {
-        public function helloAction(JsonApi $jsonApi)
-        {
-            return $response = $jsonApi->respond()->ok(new HelloDocument(), 'hello');
-        }
-    }
-
-You can also use symfony service binding instead of adding `sensio/framework-extra-bundle`_ dependency:
+Configure service binding:
 
 .. code-block:: yaml
 
@@ -87,8 +52,53 @@ You can also use symfony service binding instead of adding `sensio/framework-ext
             ...
             bind:
                 $jsonApi: '@qp_woohoolabs_yin.json_api'
+
+Then you can use ``qp_woohoolabs_yin.json_api`` service by injecting it in the constructor:
+
+
+.. code-block:: php
+
+    namespace App\Controller;
+
+    use Psr\Http\Message\ResponseInterface;
+    use WoohooLabs\Yin\JsonApi\JsonApi;
+
+    class DefaultController
+    {
+        /**
+         * @var JsonApi
+         */
+        private $jsonApi;
+
+        public function __construct(JsonApi $jsonApi)
+        {
+            $this->jsonApi = $jsonApi;
+        }
+
+        public function index(): ResponseInterface
+        {
+            return $this->jsonApi->respond()->ok(new HelloDocument(), 'hello');
+        }
+    }
+
+
+Or in the action method directly:
+
+.. code-block:: php
+
+    namespace App\Controller;
+
+    use Psr\Http\Message\ResponseInterface;
+    use WoohooLabs\Yin\JsonApi\JsonApi;
+
+    class DefaultController
+    {
+        public function index(JsonApi $jsonApi): ResponseInterface
+        {
+            return $jsonApi->respond()->ok(new HelloDocument(), 'hello');
+        }
+    }
                 
 
 .. _`woohoolabs/yin`: https://github.com/woohoolabs/yin
-.. _`sensio/framework-extra-bundle`: https://github.com/sensiolabs/SensioFrameworkExtraBundle
 .. _`ExceptionFactory`: https://github.com/woohoolabs/yin#exceptions

@@ -19,7 +19,7 @@
         </service>
         <service id="qp_woohoolabs_yin.json_api" class="%qp_woohoolabs_yin.json_api.class%">
             <factory service="qp_woohoolabs_yin.json_api.factory" method="create" />
-            <argument type="expression">service('request_stack').getCurrentRequest()</argument>
+            <argument type="service" id="request_stack"/>
         </service>
     </services>
 </container>
