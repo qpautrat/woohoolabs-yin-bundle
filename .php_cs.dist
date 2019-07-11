@@ -1,0 +1,13 @@
+<?php
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@Symfony' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'yoda_style' => false
+    ])
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(array('src', 'spec'))
+    )
+;

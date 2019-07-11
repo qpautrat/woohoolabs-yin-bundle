@@ -33,7 +33,7 @@ class JsonApiFactory
      */
     public function __construct(DiactorosFactory $psrFactory, ExceptionFactoryInterface $exceptionFactory)
     {
-        $this->psrFactory       = $psrFactory;
+        $this->psrFactory = $psrFactory;
         $this->exceptionFactory = $exceptionFactory;
     }
 

@@ -57,7 +57,8 @@ class Request implements JsonApiRequestInterface
 
     /**
      * Request constructor.
-     * @param ServerRequestInterface $request
+     *
+     * @param ServerRequestInterface    $request
      * @param ExceptionFactoryInterface $exceptionFactory
      */
     public function __construct(ServerRequestInterface $request, ExceptionFactoryInterface $exceptionFactory)
@@ -71,8 +72,8 @@ class Request implements JsonApiRequestInterface
      */
     public function validateContentTypeHeader(): void
     {
-        if ($this->isValidMediaTypeHeader("Content-Type") === false) {
-            throw new MediaTypeUnsupported($this->getHeaderLine("Content-Type"));
+        if ($this->isValidMediaTypeHeader('Content-Type') === false) {
+            throw new MediaTypeUnsupported($this->getHeaderLine('Content-Type'));
         }
     }
 
@@ -81,8 +82,8 @@ class Request implements JsonApiRequestInterface
      */
     public function validateAcceptHeader(): void
     {
-        if ($this->isValidMediaTypeHeader("Accept") === false) {
-            throw new MediaTypeUnacceptable($this->getHeaderLine("Accept"));
+        if ($this->isValidMediaTypeHeader('Accept') === false) {
+            throw new MediaTypeUnacceptable($this->getHeaderLine('Accept'));
         }
     }
 
@@ -92,8 +93,8 @@ class Request implements JsonApiRequestInterface
     public function validateQueryParams(): void
     {
         foreach ($this->getQueryParams() as $queryParamName => $queryParamValue) {
-            if (preg_match("/^([a-z]+)$/", $queryParamName) &&
-                in_array($queryParamName, ["fields", "include", "sort", "page", "filter"]) === false
+            if (preg_match('/^([a-z]+)$/', $queryParamName) &&
+                in_array($queryParamName, ['fields', 'include', 'sort', 'page', 'filter']) === false
             ) {
                 throw new QueryParamUnrecognized($queryParamName);
             }
@@ -104,32 +105,34 @@ class Request implements JsonApiRequestInterface
      * Returns a list of media type information, extracted from a given header in the current request.
      *
      * @param string $headerName
+     *
      * @return bool
      */
     protected function isValidMediaTypeHeader(string $headerName): bool
     {
         $header = $this->getHeaderLine($headerName);
-        return (strpos($header, "application/vnd.api+json") === false || $header === "application/vnd.api+json");
-    }
 
+        return strpos($header, 'application/vnd.api+json') === false || $header === 'application/vnd.api+json';
+    }
 
     protected function setIncludedFields(): void
     {
         $this->includedFields = [];
-        $fields = $this->getQueryParam("fields", []);
+        $fields = $this->getQueryParam('fields', []);
         if (is_array($fields) === false) {
             return;
         }
 
         foreach ($fields as $resourceType => $resourceFields) {
             if (is_string($resourceFields)) {
-                $this->includedFields[$resourceType] = array_flip(explode(",", $resourceFields));
+                $this->includedFields[$resourceType] = array_flip(explode(',', $resourceFields));
             }
         }
     }
 
     /**
      * @param string $resourceType
+     *
      * @return array
      */
     public function getIncludedFields(string $resourceType): array
@@ -144,6 +147,7 @@ class Request implements JsonApiRequestInterface
     /**
      * @param string $resourceType
      * @param string $field
+     *
      * @return bool
      */
     public function isIncludedField(string $resourceType, string $field): bool
@@ -167,19 +171,19 @@ class Request implements JsonApiRequestInterface
     {
         $this->includedRelationships = [];
 
-        $includeQueryParam = $this->getQueryParam("include", "");
-        if ($includeQueryParam === "") {
+        $includeQueryParam = $this->getQueryParam('include', '');
+        if ($includeQueryParam === '') {
             return;
         }
 
-        $relationshipNames = explode(",", $includeQueryParam);
+        $relationshipNames = explode(',', $includeQueryParam);
         foreach ($relationshipNames as $relationship) {
             $relationship = ".$relationship.";
             $length = strlen($relationship);
             $dot1 = 0;
 
             while ($dot1 < $length - 1) {
-                $dot2 = strpos($relationship, ".", $dot1 + 1);
+                $dot2 = strpos($relationship, '.', $dot1 + 1);
                 $path = substr($relationship, 1, $dot1 > 0 ? $dot1 - 1 : 0);
                 $name = substr($relationship, $dot1 + 1, $dot2 - $dot1 - 1);
 
@@ -189,7 +193,7 @@ class Request implements JsonApiRequestInterface
                 $this->includedRelationships[$path][$name] = $name;
 
                 $dot1 = $dot2;
-            };
+            }
         }
     }
 
@@ -207,6 +211,7 @@ class Request implements JsonApiRequestInterface
 
     /**
      * @param string $baseRelationshipPath
+     *
      * @return array
      */
     public function getIncludedRelationships(string $baseRelationshipPath): array
@@ -225,20 +230,20 @@ class Request implements JsonApiRequestInterface
     /**
      * @param string $baseRelationshipPath
      * @param string $relationshipName
-     * @param array $defaultRelationships
+     * @param array  $defaultRelationships
+     *
      * @return bool
      */
     public function isIncludedRelationship(
         string $baseRelationshipPath,
         string $relationshipName,
         array $defaultRelationships
-    ): bool
-    {
+    ): bool {
         if ($this->includedRelationships === null) {
             $this->setIncludedRelationships();
         }
 
-        if ($this->getQueryParam("include") === "") {
+        if ($this->getQueryParam('include') === '') {
             return false;
         }
 
@@ -251,13 +256,14 @@ class Request implements JsonApiRequestInterface
 
     protected function setSorting(): void
     {
-        $sortingQueryParam = $this->getQueryParam("sort", "");
-        if ($sortingQueryParam === "") {
+        $sortingQueryParam = $this->getQueryParam('sort', '');
+        if ($sortingQueryParam === '') {
             $this->sorting = [];
+
             return;
         }
 
-        $sorting = explode(",", $sortingQueryParam);
+        $sorting = explode(',', $sortingQueryParam);
         $this->sorting = is_array($sorting) ? $sorting : [];
     }
 
@@ -275,7 +281,7 @@ class Request implements JsonApiRequestInterface
 
     protected function setPagination(): void
     {
-        $pagination =  $this->getQueryParam("page", null);
+        $pagination = $this->getQueryParam('page', null);
         $this->pagination = is_array($pagination) ? $pagination : [];
     }
 
@@ -293,6 +299,7 @@ class Request implements JsonApiRequestInterface
 
     /**
      * @param int|null $defaultPage
+     *
      * @return FixedPageBasedPagination
      */
     public function getFixedPageBasedPagination(?int $defaultPage = null): FixedPageBasedPagination
@@ -303,6 +310,7 @@ class Request implements JsonApiRequestInterface
     /**
      * @param int|null $defaultPage
      * @param int|null $defaultSize
+     *
      * @return PageBasedPagination
      */
     public function getPageBasedPagination(?int $defaultPage = null, ?int $defaultSize = null): PageBasedPagination
@@ -313,18 +321,19 @@ class Request implements JsonApiRequestInterface
     /**
      * @param int|null $defaultOffset
      * @param int|null $defaultLimit
+     *
      * @return OffsetBasedPagination
      */
     public function getOffsetBasedPagination(
         ?int $defaultOffset = null,
         ?int $defaultLimit = null
-    ): OffsetBasedPagination
-    {
+    ): OffsetBasedPagination {
         return OffsetBasedPagination::fromPaginationQueryParams($this->getPagination(), $defaultOffset, $defaultLimit);
     }
 
     /**
      * @param mixed $defaultCursor
+     *
      * @return \WoohooLabs\Yin\JsonApi\Request\Pagination\CursorBasedPagination
      */
     public function getCursorBasedPagination($defaultCursor = null): CursorBasedPagination
@@ -334,12 +343,12 @@ class Request implements JsonApiRequestInterface
 
     protected function setFiltering(): void
     {
-        $filtering = $this->getQueryParam("filter", []);
+        $filtering = $this->getQueryParam('filter', []);
         $this->filtering = is_array($filtering) ? $filtering : [];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFiltering(): array
     {
@@ -351,7 +360,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFilteringParam(string $param, $default = null)
     {
@@ -362,7 +371,8 @@ class Request implements JsonApiRequestInterface
 
     /**
      * @param string $name
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return array|string|mixed
      */
     public function getQueryParam(string $name, $default = null)
@@ -376,7 +386,8 @@ class Request implements JsonApiRequestInterface
      * Returns a query parameter with a name of $name if it is present in the request, or the $default value otherwise.
      *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return $this|Request
      */
     public function withQueryParam(string $name, $value)
@@ -386,6 +397,7 @@ class Request implements JsonApiRequestInterface
         $queryParams[$name] = $value;
         $self->serverRequest = $this->serverRequest->withQueryParams($queryParams);
         $self->initializeParsedQueryParams();
+
         return $self;
     }
 
@@ -399,32 +411,33 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getResource($default = null)
     {
         $body = $this->getParsedBody();
-        return isset($body["data"])? $body["data"] : $default;
+
+        return isset($body['data']) ? $body['data'] : $default;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getResourceType($default = null)
     {
         $data = $this->getResource();
 
-        return isset($data["type"]) ? $data["type"] : $default;
+        return isset($data['type']) ? $data['type'] : $default;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getResourceId($default = null)
     {
         $data = $this->getResource();
 
-        return isset($data["id"]) ? $data["id"] : null;
+        return isset($data['id']) ? $data['id'] : null;
     }
 
     /**
@@ -434,12 +447,13 @@ class Request implements JsonApiRequestInterface
     {
         $data = $this->getResource();
 
-        return isset($data["attributes"]) ? $data["attributes"] : [];
+        return isset($data['attributes']) ? $data['attributes'] : [];
     }
 
     /**
      * @param string $attribute
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getResourceAttribute(string $attribute, $default = null)
@@ -451,7 +465,9 @@ class Request implements JsonApiRequestInterface
 
     /**
      * @param string $relationship
-     * @return null|ToOneRelationship
+     *
+     * @return ToOneRelationship|null
+     *
      * @throws \WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface
      */
     public function getToOneRelationship(string $relationship): ?ToOneRelationship
@@ -459,36 +475,39 @@ class Request implements JsonApiRequestInterface
         $data = $this->getResource();
 
         //The relationship has to exist in the request and have a data attribute to be valid
-        if (isset($data["relationships"][$relationship]) &&
-            array_key_exists("data", $data["relationships"][$relationship])
+        if (isset($data['relationships'][$relationship]) &&
+            array_key_exists('data', $data['relationships'][$relationship])
         ) {
             //If the data is null, this request is to clear the relationship, we return an empty relationship
-            if ($data["relationships"][$relationship]["data"] === null) {
+            if ($data['relationships'][$relationship]['data'] === null) {
                 return new ToOneRelationship();
             }
             //If the data is set and is not null, we create the relationship with a resource identifier from the request
             return new ToOneRelationship(
-                ResourceIdentifier::fromArray($data["relationships"][$relationship]["data"], $this->exceptionFactory)
+                ResourceIdentifier::fromArray($data['relationships'][$relationship]['data'], $this->exceptionFactory)
             );
         }
+
         return null;
     }
 
     /**
      * @param string $relationship
-     * @return null|ToManyRelationship
+     *
+     * @return ToManyRelationship|null
+     *
      * @throws \WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface
      */
     public function getToManyRelationship(string $relationship): ?ToManyRelationship
     {
         $data = $this->getResource();
 
-        if (isset($data["relationships"][$relationship]["data"]) === false) {
+        if (isset($data['relationships'][$relationship]['data']) === false) {
             return null;
         }
 
         $resourceIdentifiers = [];
-        foreach ($data["relationships"][$relationship]["data"] as $item) {
+        foreach ($data['relationships'][$relationship]['data'] as $item) {
             $resourceIdentifiers[] = ResourceIdentifier::fromArray($item, $this->exceptionFactory);
         }
 
@@ -496,7 +515,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getProtocolVersion()
     {
@@ -504,17 +523,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withProtocolVersion($version)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withProtocolVersion($version);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getHeaders()
     {
@@ -522,7 +542,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function hasHeader($name)
     {
@@ -530,7 +550,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getHeader($name)
     {
@@ -538,7 +558,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getHeaderLine($name)
     {
@@ -546,37 +566,40 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withHeader($name, $value)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withHeader($name, $value);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withAddedHeader($name, $value)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withAddedHeader($name, $value);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withoutHeader($name)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withoutHeader($name);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getBody()
     {
@@ -584,17 +607,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withBody(StreamInterface $body)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withBody($body);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getRequestTarget()
     {
@@ -602,17 +626,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withRequestTarget($requestTarget)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withRequestTarget($requestTarget);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getMethod()
     {
@@ -620,17 +645,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withMethod($method)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withMethod($method);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getUri()
     {
@@ -638,17 +664,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withUri($uri, $preserveHost);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getServerParams()
     {
@@ -656,7 +683,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getCookieParams()
     {
@@ -664,17 +691,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withCookieParams(array $cookies)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withCookieParams($cookies);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getQueryParams()
     {
@@ -682,18 +710,19 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withQueryParams(array $query)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withQueryParams($query);
         $self->initializeParsedQueryParams();
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getUploadedFiles()
     {
@@ -701,17 +730,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withUploadedFiles($uploadedFiles);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getParsedBody()
     {
@@ -728,17 +758,18 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withParsedBody($data)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withParsedBody($data);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getAttributes()
     {
@@ -746,7 +777,7 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getAttribute($name, $default = null)
     {
@@ -754,22 +785,24 @@ class Request implements JsonApiRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withAttribute($name, $value)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withAttribute($name, $value);
+
         return $self;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withoutAttribute($name)
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withoutAttribute($name);
+
         return $self;
     }
 }
