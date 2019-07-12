@@ -5,15 +5,15 @@ namespace spec\QP\WoohoolabsYinBundle\Factory;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ServerRequestInterface;
 use QP\WoohoolabsYinBundle\Factory\JsonApiFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use WoohooLabs\Yin\JsonApi\JsonApi;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
+use WoohooLabs\Yin\JsonApi\JsonApi;
 
 class JsonApiFactorySpec extends ObjectBehavior
 {
-    public function let(DiactorosFactory $psr7Factory, RequestStack $requestStack, Request $request, ServerRequestInterface $psrRequest, ExceptionFactoryInterface $exceptionFactory)
+    public function let(HttpMessageFactoryInterface $psr7Factory, RequestStack $requestStack, Request $request, ServerRequestInterface $psrRequest, ExceptionFactoryInterface $exceptionFactory)
     {
         $this->beConstructedWith($psr7Factory, $exceptionFactory);
         $requestStack->getCurrentRequest()->willReturn($request);

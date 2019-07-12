@@ -5,16 +5,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="qp_woohoolabs_yin.psr7_factory.class">Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory</parameter>
         <parameter key="qp_woohoolabs_yin.json_api.class">WoohooLabs\Yin\JsonApi\JsonApi</parameter>
         <parameter key="qp_woohoolabs_yin.json_api.factory.class">QP\WoohoolabsYinBundle\Factory\JsonApiFactory</parameter>
         <parameter key="qp_woohoolabs_yin.exception_factory.default.class">WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory</parameter>
     </parameters>
     <services>
         <service id="qp_woohoolabs_yin.exception_factory.default" class="%qp_woohoolabs_yin.exception_factory.default.class%"/>
-        <service id="qp_woohoolabs_yin.psr7_factory" class="%qp_woohoolabs_yin.psr7_factory.class%" public="false"/>
         <service id="qp_woohoolabs_yin.json_api.factory" class="%qp_woohoolabs_yin.json_api.factory.class%" public="false">
-            <argument type="service" id="qp_woohoolabs_yin.psr7_factory"/>
+            <argument type="service" id="sensio_framework_extra.psr7.http_message_factory"/>
             <argument type="service" id="qp_woohoolabs_yin.exception_factory"/>
         </service>
         <service id="qp_woohoolabs_yin.json_api" class="%qp_woohoolabs_yin.json_api.class%">
