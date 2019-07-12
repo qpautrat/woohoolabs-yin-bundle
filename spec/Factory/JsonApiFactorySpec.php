@@ -3,13 +3,11 @@
 namespace spec\QP\WoohoolabsYinBundle\Factory;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use QP\WoohoolabsYinBundle\Factory\JsonApiFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Request;
 use WoohooLabs\Yin\JsonApi\JsonApi;
-use WoohooLabs\Yin\JsonApi\Exception;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 
 class JsonApiFactorySpec extends ObjectBehavior
