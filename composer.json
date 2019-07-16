@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": "^7.1.0",
-        "symfony/psr-http-message-bridge": "^1.0.2",
-        "woohoolabs/yin": "^3.0",
+        "symfony/psr-http-message-bridge": "^1.2",
+        "woohoolabs/yin": "^4.0",
         "nyholm/psr7": "^1.1",
         "sensio/framework-extra-bundle": "^5.4"
     },

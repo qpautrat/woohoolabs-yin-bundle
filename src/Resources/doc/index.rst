@@ -6,7 +6,7 @@ Implements `woohoolabs/yin`_ framework into Symfony.
 Installation
 ------------
 
-Note: `4.x` is for Yin `3.x` and `3.x` ks for Yin `0.11`
+Note: `5.x` is for Yin `4.x`, `4.x` is for Yin `3.x` and `3.x` is for Yin `0.11`
 
 .. code-block:: bash
 
