@@ -2,12 +2,12 @@
 
 namespace QP\WoohoolabsYinBundle\Factory;
 
+use Nyholm\Psr7\Response;
 use QP\WoohoolabsYinBundle\Request\Request as JsonApiRequest;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\JsonApi;
-use Zend\Diactoros\Response;
 
 /**
  * @author Quentin <quentin.pautrat@gmail.com>
