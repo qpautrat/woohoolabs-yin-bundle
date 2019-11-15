@@ -14,8 +14,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('qp_woohoolabs_yin');
+        $treeBuilder = new TreeBuilder('qp_woohoolabs_yin');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
