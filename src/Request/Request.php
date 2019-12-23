@@ -10,33 +10,16 @@ use WoohooLabs\Yin\JsonApi\Request\Pagination\PageBasedPagination;
 
 class Request extends JsonApiRequest
 {
-    /**
-     * @param int|null $defaultPage
-     *
-     * @return FixedPageBasedPagination
-     */
     public function getFixedPageBasedPagination(?int $defaultPage = null): FixedPageBasedPagination
     {
         return FixedPageBasedPagination::fromPaginationQueryParams($this->getPagination(), $defaultPage);
     }
 
-    /**
-     * @param int|null $defaultPage
-     * @param int|null $defaultSize
-     *
-     * @return PageBasedPagination
-     */
     public function getPageBasedPagination(?int $defaultPage = null, ?int $defaultSize = null): PageBasedPagination
     {
         return PageBasedPagination::fromPaginationQueryParams($this->getPagination(), $defaultPage, $defaultSize);
     }
 
-    /**
-     * @param int|null $defaultOffset
-     * @param int|null $defaultLimit
-     *
-     * @return OffsetBasedPagination
-     */
     public function getOffsetBasedPagination(
         ?int $defaultOffset = null,
         ?int $defaultLimit = null
@@ -46,8 +29,6 @@ class Request extends JsonApiRequest
 
     /**
      * @param mixed $defaultCursor
-     *
-     * @return CursorBasedPagination
      */
     public function getCursorBasedPagination($defaultCursor = null): CursorBasedPagination
     {

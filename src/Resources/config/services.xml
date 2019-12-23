@@ -13,6 +13,7 @@
         <service id="qp_woohoolabs_yin.exception_factory.default" class="%qp_woohoolabs_yin.exception_factory.default.class%"/>
         <service id="qp_woohoolabs_yin.json_api.factory" class="%qp_woohoolabs_yin.json_api.factory.class%" public="false">
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory"/>
+            <argument type="service" id="Psr\Http\Message\ResponseFactoryInterface" />
             <argument type="service" id="qp_woohoolabs_yin.exception_factory"/>
         </service>
         <service id="qp_woohoolabs_yin.json_api" class="%qp_woohoolabs_yin.json_api.class%">
