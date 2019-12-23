@@ -2,7 +2,7 @@
 
 namespace QP\WoohoolabsYinBundle\Factory;
 
-use Nyholm\Psr7\Response;
+use Psr\Http\Message\ResponseFactoryInterface;
 use QP\WoohoolabsYinBundle\Request\Request as JsonApiRequest;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,7 +20,10 @@ class JsonApiFactory
      * @var HttpMessageFactoryInterface
      */
     private $psrFactory;
-
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private $responseFactory;
     /**
      * @var ExceptionFactoryInterface
      */
@@ -28,26 +31,34 @@ class JsonApiFactory
 
     /**
      * Constructor.
-     *
-     * @param HttpMessageFactoryInterface $psrFactory
      */
-    public function __construct(HttpMessageFactoryInterface $psrFactory, ExceptionFactoryInterface $exceptionFactory)
-    {
+    public function __construct(
+        HttpMessageFactoryInterface $psrFactory,
+        ResponseFactoryInterface $responseFactory,
+        ExceptionFactoryInterface $exceptionFactory
+    ) {
         $this->psrFactory = $psrFactory;
+        $this->responseFactory = $responseFactory;
         $this->exceptionFactory = $exceptionFactory;
     }
 
     /**
      * Create a new instance of JsonApi by transforming a HttpFoundation Request into PSR7 Request.
      *
-     * @param RequestStack $requestStack
-     *
      * @return JsonApi
      */
     public function create(RequestStack $requestStack)
     {
         $request = $this->psrFactory->createRequest($requestStack->getCurrentRequest());
+        $response = $this->responseFactory->createResponse();
 
-        return new JsonApi(new JsonApiRequest($request, $this->exceptionFactory), new Response(), $this->exceptionFactory);
+        return new JsonApi(
+            new JsonApiRequest(
+                $request,
+                $this->exceptionFactory
+            ),
+            $response,
+            $this->exceptionFactory
+        );
     }
 }
