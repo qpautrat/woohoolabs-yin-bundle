@@ -11,16 +11,16 @@
         }
     ],
     "require": {
-        "php": "^7.1.0",
+        "php": "^7.1.0 || ^8.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.4",
-        "symfony/psr-http-message-bridge": "^1.2",
+        "symfony/psr-http-message-bridge": "^1.2 || ^2.1",
         "woohoolabs/yin": "^4.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.0",
         "nyholm/psr7": "^1.2",
-        "phpspec/phpspec": "^4.3"
+        "phpspec/phpspec": "^4.3 || ^7.1"
     },
     "autoload": {
         "psr-4": {
